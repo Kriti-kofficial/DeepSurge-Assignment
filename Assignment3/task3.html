@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Manager</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #E6E6FA; /* ✅ light violet */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+      width: 400px;
+      text-align: center;
+      transform: scale(0.8);
+      opacity: 0;
+      animation: popup 0.6s ease-out forwards; /* ✅ animation on load */
+      transition: transform 0.3s ease, box-shadow 0.3s ease; /* hover effect */
+    }
+    @keyframes popup {
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    .container:hover {
+      transform: scale(1.03); /* slight zoom on hover */
+      box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+    }
+    input {
+      padding: 8px;
+      margin: 6px 0;
+      width: 90%;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      padding: 8px 15px;
+      margin-top: 10px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .error {
+      color: red;
+      font-size: 14px;
+      margin: 5px 0;
+    }
+    ul {
+      list-style-type: disc;
+      padding-left: 20px;
+      margin-top: 15px;
+      text-align: left;
+    }
+    li {
+      margin: 5px 0;
+      color: green; /* ✅ dot is green */
+    }
+    .name {
+      color: green;
+      font-weight: bold;
+    }
+    .phone {
+      color: blue;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>📞 Contact Manager</h2>
+
+    <input type="text" id="search" placeholder="Search contacts...">
+
+    <form id="contactForm">
+      <input type="text" id="name" placeholder="Enter full name"><br>
+      <input type="text" id="phone" placeholder="Enter phone number"><br>
+      <button type="submit">Add Contact</button>
+      <p class="error" id="errorMsg"></p>
+    </form>
+
+    <h3>Contact List:</h3>
+    <ul id="contactList"></ul>
+  </div>
+
+  <script>
+    const form = document.getElementById("contactForm");
+    const nameInput = document.getElementById("name");
+    const phoneInput = document.getElementById("phone");
+    const errorMsg = document.getElementById("errorMsg");
+    const contactList = document.getElementById("contactList");
+    const searchInput = document.getElementById("search");
+
+    let contacts = JSON.parse(localStorage.getItem("contacts")) || [];
+    renderContacts();
+
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const name = nameInput.value.trim();
+      const phone = phoneInput.value.trim();
+
+      if (name === "" || phone === "") {
+        errorMsg.textContent = "⚠ Please fill out all fields.";
+        return;
+      }
+      if (!/^[0-9]+$/.test(phone)) {
+        errorMsg.textContent = "⚠ Phone number must contain digits only.";
+        return;
+      }
+
+      errorMsg.textContent = "";
+
+      contacts.push({ name, phone });
+      localStorage.setItem("contacts", JSON.stringify(contacts));
+      renderContacts();
+
+      nameInput.value = "";
+      phoneInput.value = "";
+    });
+
+    function renderContacts(filter = "") {
+      contactList.innerHTML = "";
+      contacts
+        .filter(c => c.name.toLowerCase().includes(filter.toLowerCase()))
+        .forEach(c => {
+          const li = document.createElement("li");
+          li.innerHTML = <span class="name">${c.name}</span> – <span class="phone">${c.phone}</span>;
+          contactList.appendChild(li);
+        });
+    }
+
+    searchInput.addEventListener("input", function() {
+      renderContacts(searchInput.value);
+    });
+    
+
+  </script>
+</body>
+</html>
