@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Entry System</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+    }
+    form {
+      margin-bottom: 20px;
+    }
+    input {
+      padding: 8px;
+      margin: 5px 0;
+      width: 250px;
+    }
+    button {
+      padding: 8px 15px;
+      cursor: pointer;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .error {
+      color: red;
+      font-size: 14px;
+    }
+    ul {
+      list-style-type: disc;
+      padding-left: 20px;
+    }
+    li {
+      color: green; /* ✅ Makes the dot green */
+    }
+    .label {
+      color: green;
+      font-weight: bold;
+    }
+    .name {
+      color: green;
+      font-weight: bold;
+    }
+    .email {
+      color: blue;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <h2>Student Entry System</h2>
+
+  <form id="studentForm">
+    <label>Full Name:</label><br>
+    <input type="text" id="name" placeholder="Enter full name"><br><br>
+
+    <label>Email Address:</label><br>
+    <input type="text" id="email" placeholder="Enter email"><br><br>
+
+    <button type="submit">Add Student</button>
+    <p class="error" id="errorMsg"></p>
+  </form>
+
+  <h3>Student List:</h3>
+  <ul id="studentList"></ul>
+
+  <script>
+    const form = document.getElementById("studentForm");
+    const nameInput = document.getElementById("name");
+    const emailInput = document.getElementById("email");
+    const errorMsg = document.getElementById("errorMsg");
+    const studentList = document.getElementById("studentList");
+
+    form.addEventListener("submit", function(e) {
+      e.preventDefault(); 
+      const name = nameInput.value.trim();
+      const email = emailInput.value.trim();
+
+      
+      if (name === "" || email === "") {
+        errorMsg.textContent = "⚠ Please fill out all fields.";
+        return;
+      }
+      if (!email.includes("@")) {
+        errorMsg.textContent = "⚠ Invalid email format.";
+        return;
+      }
+
+      errorMsg.textContent = "";
+
+      
+      const li = document.createElement("li");
+      li.innerHTML = `<span class="label">Name:</span> <span class="name">${name}</span>, 
+                      <span class="label">Email:</span> <span class="email">${email}</span>`;
+      studentList.appendChild(li);
+
+      
+      nameInput.value = "";
+      emailInput.value = "";
+    });
+  </script>
+</body>
+</html>
